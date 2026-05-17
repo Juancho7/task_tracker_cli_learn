@@ -47,6 +47,18 @@ const addTask = (tasks: Task[], description: string) => {
     console.log("Task added successfully with ID: ", newId)
 }
 
+const listTasks = (status?: string): Task[] => {
+    const currentTasks = loadTasks()
+
+    if (!status) {
+        return currentTasks
+    }
+
+    const filteredTasks = currentTasks.filter(t => t.status === status)
+
+    return filteredTasks
+}
+
 switch (command) {
     case "add":
         const currentTasks = loadTasks()    
@@ -68,6 +80,9 @@ switch (command) {
     case "mark-done":
         break;
     case "list":
+        const filteredTasks = listTasks(args[1])
+
+        console.log(filteredTasks)
         break;
     default:
         console.log("Unknown command");
