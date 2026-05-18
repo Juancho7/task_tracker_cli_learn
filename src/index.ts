@@ -59,6 +59,16 @@ const listTasks = (status?: string): Task[] => {
     return filteredTasks
 }
 
+const deleteTask = (id: number) => {
+    const currentTasks = loadTasks()
+
+    const survivingTasks = currentTasks.filter(t => t.id !== id)
+
+    saveTasks(survivingTasks)
+
+    return survivingTasks
+}
+
 switch (command) {
     case "add":
         const currentTasks = loadTasks()    
@@ -73,7 +83,17 @@ switch (command) {
         break;
     case "update":
         break;
-    case "delete":
+    case "delete": 
+        if (!args[1]) {
+            console.log("ID missing, please write down an ID")
+            break;
+        }
+        
+        const id = parseInt(args[1])
+
+        deleteTask(id)
+        
+        console.log("Task deleted succesfully")
         break;
     case "mark-in-progress":
         break;
