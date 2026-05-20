@@ -2,6 +2,8 @@
 
 A command-line interface to manage your tasks. Add, update, delete, and track the status of your tasks, all stored in a local JSON file.
 
+Project based on: https://roadmap.sh/projects/task-tracker
+
 ## Requirements
 
 - Node.js v18+
