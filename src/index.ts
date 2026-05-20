@@ -47,10 +47,52 @@ const addTask = (tasks: Task[], description: string) => {
     console.log("Task added successfully with ID: ", newId)
 }
 
-const updateTask = (id: number, newDescription: string, tasks: Task[]): Task[] => {
-    const updatedTasks = tasks.map(t => {
+const updateTask = (id: number, newDescription: string): Task[] => {
+    const currentTasks = loadTasks()
+
+    const updatedTasks = currentTasks.map(t => {
         if (t.id === id) {
             return { ...t, description: newDescription, updatedAt: new Date() }
+        }
+        return t
+    })
+
+    saveTasks(updatedTasks)
+
+    return updatedTasks
+}
+
+const deleteTask = (id: number): Task[] => {
+    const currentTasks = loadTasks()
+
+    const survivingTasks = currentTasks.filter(t => t.id !== id)
+
+    saveTasks(survivingTasks)
+
+    return survivingTasks
+}
+
+const markInProgress = (id: number): Task[] => {
+    const currentTasks = loadTasks()
+
+    const updatedTasks = currentTasks.map(t => {
+        if (t.id === id) {
+            return { ...t, status: "in-progress" as Task["status"], updatedAt: new Date() }
+        }
+        return t
+    })
+
+    saveTasks(updatedTasks)
+
+    return updatedTasks
+}
+
+const markDone = (id: number): Task[] => {
+    const currentTasks = loadTasks()
+
+    const updatedTasks = currentTasks.map(t => {
+        if (t.id === id) {
+            return { ...t, status: "done" as Task["status"], updatedAt: new Date() }
         }
         return t
     })
@@ -70,16 +112,6 @@ const listTasks = (status?: string): Task[] => {
     const filteredTasks = currentTasks.filter(t => t.status === status)
 
     return filteredTasks
-}
-
-const deleteTask = (id: number) => {
-    const currentTasks = loadTasks()
-
-    const survivingTasks = currentTasks.filter(t => t.id !== id)
-
-    saveTasks(survivingTasks)
-
-    return survivingTasks
 }
 
 switch (command) {
@@ -103,25 +135,49 @@ switch (command) {
         }
         
         const taskId = parseInt(args[1])
-        
-        updateTask(taskId, newDescription, loadTasks())
+
+        updateTask(taskId, newDescription)
         break;
-    case "delete": 
+    case "delete": {
         if (!args[1]) {
             console.log("ID missing, please write down an ID")
             break;
         }
-        
+
         const id = parseInt(args[1])
 
         deleteTask(id)
-        
+
         console.log("Task deleted succesfully")
         break;
-    case "mark-in-progress":
+    }
+    case "mark-in-progress": {
+        if (!args[1]) {
+            console.log("ID missing, please write down an ID")
+            break;
+        }
+
+        const id = parseInt(args[1])
+
+        markInProgress(id)
+
+        console.log("Task marked as in progress succesfully")
         break;
+    }
     case "mark-done":
+        {
+        if (!args[1]) {
+            console.log("ID missing, please write down an ID")
+            break;
+        }
+
+        const id = parseInt(args[1])
+
+        markDone(id)
+
+        console.log("Task marked as done succesfully")
         break;
+    }
     case "list":
         const taskStatus = args[1]
         const filteredTasks = listTasks(taskStatus)
