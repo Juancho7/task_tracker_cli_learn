@@ -11,7 +11,7 @@ A command-line interface to manage your tasks. Add, update, delete, and track th
 
 ```bash
 npm install
-npm run build
+npx tsc
 ```
 
 ## Usage
