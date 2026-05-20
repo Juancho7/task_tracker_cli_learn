@@ -14,11 +14,11 @@ interface Task {
 
 const loadTasks = (): Task[] => {
     if (!fs.existsSync("tasks.json")) {
-      return [];
+        return [];
     } else {
-      const content = fs.readFileSync("tasks.json", "utf-8");
+        const content = fs.readFileSync("tasks.json", "utf-8");
 
-      return JSON.parse(content)
+        return JSON.parse(content)
     }
 };
 
@@ -45,6 +45,19 @@ const addTask = (tasks: Task[], description: string) => {
     saveTasks(tasks)
 
     console.log("Task added successfully with ID: ", newId)
+}
+
+const updateTask = (id: number, newDescription: string, tasks: Task[]): Task[] => {
+    const updatedTasks = tasks.map(t => {
+        if (t.id === id) {
+            return { ...t, description: newDescription, updatedAt: new Date() }
+        }
+        return t
+    })
+
+    saveTasks(updatedTasks)
+
+    return updatedTasks
 }
 
 const listTasks = (status?: string): Task[] => {
@@ -82,6 +95,16 @@ switch (command) {
         addTask(currentTasks, description)
         break;
     case "update":
+        const newDescription = args[2]
+        
+        if (!args[1] || !newDescription) {
+            console.log("Some data missing, please write down the missing data, ID or a new description for the task")
+            break;
+        }
+        
+        const taskId = parseInt(args[1])
+        
+        updateTask(taskId, newDescription, loadTasks())
         break;
     case "delete": 
         if (!args[1]) {
@@ -100,7 +123,8 @@ switch (command) {
     case "mark-done":
         break;
     case "list":
-        const filteredTasks = listTasks(args[1])
+        const taskStatus = args[1]
+        const filteredTasks = listTasks(taskStatus)
 
         console.log(filteredTasks)
         break;
